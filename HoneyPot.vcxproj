@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
+    <ClInclude Include="cOptions.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="wxProcessListCtrl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cApp.cpp" />
     <ClCompile Include="cMain.cpp" />
+    <ClCompile Include="cOptions.cpp" />
     <ClCompile Include="wxProcessListCtrl.cpp" />
   </ItemGroup>
   <ItemGroup>

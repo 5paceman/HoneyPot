@@ -17,15 +17,17 @@ HoneyPot::cMain::cMain() : wxFrame(nullptr, wxID_ANY, "HoneyPot Injector", wxPoi
 	wxStaticText* injMethodLabel = new wxStaticText(m_mainPane, wxID_ANY, "Injection Method:", wxPoint(60, 50), wxSize(150, 15), wxALIGN_CENTRE_HORIZONTAL);
 	m_injMethodList = new wxComboBox(m_mainPane, wxID_ANY, wxEmptyString, wxPoint(60, 68), wxSize(150, 20), 3, injMethods, wxCB_DROPDOWN);
 	m_injMethodList->SetEditable(false);
+	m_injMethodList->SetSelection(0);
 	
 	wxStaticText* reMethodLabel = new wxStaticText(m_mainPane, wxID_ANY, "Execution Method:", wxPoint(500 - 75 - 150, 50), wxSize(150, 15), wxALIGN_CENTRE_HORIZONTAL);
 	m_reExecList = new wxComboBox(m_mainPane, wxID_ANY, wxEmptyString, wxPoint(500 - 75 - 150, 68), wxSize(150, 20), 2, reMethods, wxCB_DROPDOWN);
 	m_reExecList->SetEditable(false);
+	m_reExecList->SetSelection(0);
 	
 	m_injectButton = new wxButton(m_mainPane, wxID_ANY, "Inject", wxPoint(10, 95), wxSize(150, 40));
 	m_injectButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &cMain::OnInjectButtonClicked, this);
 	
-	m_settingsButton = new wxButton(m_mainPane, wxID_ANY, "Settings", wxPoint(325, 95), wxSize(150, 40));
+	m_settingsButton = new wxButton(m_mainPane, wxID_ANY, "Detach", wxPoint(325, 95), wxSize(150, 40));
 	m_settingsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &cMain::OnSettingsButtonClicked, this);
 	
 	m_searchBox = new wxTextCtrl(m_mainPane, wxID_ANY, "Search", wxPoint(10, 140), wxSize(465, 20));
@@ -104,11 +106,19 @@ void HoneyPot::cMain::OnInjectButtonClicked(wxCommandEvent& evt)
 
 void HoneyPot::cMain::OnSettingsButtonClicked(wxCommandEvent& evt)
 {
+	wxTextEntryDialog handleDialog(m_mainPane, "Please enter handle:");
+	if (handleDialog.ShowModal() == wxID_OK)
+	{
+		uintptr_t handle = std::stoul(std::wstring(handleDialog.GetValue()), nullptr, 16);
+
+	}
 }
 
 void HoneyPot::cMain::OnRefreshButtonClicked(wxCommandEvent& evt)
 {
 	m_listCtrl->RefreshProcesses();
+	selectedPID = 0;
+	m_selectedPidText->SetLabel("Selected PID: " + std::to_wstring(selectedPID));
 }
 
 void HoneyPot::cMain::OnSelectedItem(wxListEvent& evt)

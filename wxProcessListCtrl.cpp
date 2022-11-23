@@ -3,9 +3,6 @@
 
 wxProcessListCtrl::wxProcessListCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, wxTextCtrl* searchBox) : wxListCtrl(parent, id, pos, size, wxLC_REPORT | wxLC_VRULES | wxLC_SINGLE_SEL | wxLC_VIRTUAL)
 {
-	this->InsertColumn(0, _("PID"), wxLIST_FORMAT_LEFT, 40);
-	this->InsertColumn(1, _("Window Name"), wxLIST_FORMAT_LEFT, 197);
-	this->InsertColumn(2, _("Process"), wxLIST_FORMAT_LEFT);
 	RefreshProcesses();
 	m_searchBox = searchBox;
 	if (m_searchBox != nullptr)
@@ -63,6 +60,15 @@ void wxProcessListCtrl::RefreshProcesses()
 	if (m_searchBox != nullptr)
 		m_searchBox->Clear();
 
+	this->ClearAll();
+
+	int pidWidth = 40;
+	int windowWidth = this->GetSize().GetWidth() / 2 - pidWidth;
+	int processWidth = this->GetSize().GetWidth() / 2 - pidWidth;
+	this->InsertColumn(0, _("PID"), wxLIST_FORMAT_LEFT, pidWidth);
+	this->InsertColumn(1, _("Window Name"), wxLIST_FORMAT_LEFT, windowWidth);
+	this->InsertColumn(2, _("Process"), wxLIST_FORMAT_LEFT, processWidth);
+
 	m_activeProcessList.clear();
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hSnapshot)
@@ -76,7 +82,7 @@ void wxProcessListCtrl::RefreshProcesses()
 		do {
 			ProcessData procData{ 0 };
 			procData.processID = procEntry.th32ProcessID;
-			procData.windowName = nightshade::GetWindowTitleFromPID(procEntry.th32ProcessID);
+			procData.windowName = nightshade::Utils::GetWindowTitleFromPID(procEntry.th32ProcessID);
 			procData.szExeFile = procEntry.szExeFile;
 			m_activeProcessList.push_back(procData);
 		} while (Process32Next(hSnapshot, &procEntry));
