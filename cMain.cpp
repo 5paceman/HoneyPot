@@ -27,7 +27,7 @@ HoneyPot::cMain::cMain() : wxFrame(nullptr, wxID_ANY, "HoneyPot Injector", wxPoi
 	m_injectButton = new wxButton(m_mainPane, wxID_ANY, "Inject", wxPoint(10, 95), wxSize(150, 40));
 	m_injectButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &cMain::OnInjectButtonClicked, this);
 	
-	m_settingsButton = new wxButton(m_mainPane, wxID_ANY, "Detach", wxPoint(325, 95), wxSize(150, 40));
+	m_settingsButton = new wxButton(m_mainPane, wxID_ANY, "Options", wxPoint(325, 95), wxSize(150, 40));
 	m_settingsButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &cMain::OnSettingsButtonClicked, this);
 	
 	m_searchBox = new wxTextCtrl(m_mainPane, wxID_ANY, "Search", wxPoint(10, 140), wxSize(465, 20));
@@ -44,6 +44,13 @@ HoneyPot::cMain::cMain() : wxFrame(nullptr, wxID_ANY, "HoneyPot Injector", wxPoi
 	m_refreshButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &cMain::OnRefreshButtonClicked, this);
 	
 	m_selectedPidText = new wxStaticText(m_mainPane, wxID_ANY, "Selected PID: " + selectedPID, wxPoint(10, 410));
+
+	m_cOptions = new cOptions(this);
+	RCast<cOptions*>(m_cOptions)->m_tlsCallbacksCheckbox->SetValue(options.mmTLS);
+	RCast<cOptions*>(m_cOptions)->m_sehCheckbox->SetValue(options.mmSEH);
+	RCast<cOptions*>(m_cOptions)->m_fakeHeadersCheckbox->SetValue(options.mmFH);
+	RCast<cOptions*>(m_cOptions)->m_clearHeadersCheckbox->SetValue(options.mmCH);
+	RCast<cOptions*>(m_cOptions)->m_cloakThreadCheckbox->SetValue(options.loCT);
 }
 
 void HoneyPot::cMain::OnLogOutput(const wchar_t* message)
@@ -88,7 +95,18 @@ void HoneyPot::cMain::OnInjectButtonClicked(wxCommandEvent& evt)
 	
 	size_t len = (wcslen(m_filePathTxt->GetValue().wchar_str()) + 1) * sizeof(wchar_t);
 	memcpy(injData.dllPath, m_filePathTxt->GetValue().wchar_str(), len);
-	injData.flags = 0;
+
+	if (options.loCT)
+		injData.flags |= CLOAK_THREAD;
+	if (options.mmCH)
+		injData.flags |= MM_CLEAR_PE;
+	if (options.mmFH)
+		injData.flags |= MM_FAKE_PE;
+	if (options.mmSEH)
+		injData.flags |= MM_SEH;
+	if (options.mmTLS)
+		injData.flags |= MM_TLS;
+
 	injData.pID = selectedPID;
 	injData.injMethod = InjMethod::IM_NONE;
 	injData.reMethod = RemoteExecMethod::RE_NONE;
@@ -106,11 +124,13 @@ void HoneyPot::cMain::OnInjectButtonClicked(wxCommandEvent& evt)
 
 void HoneyPot::cMain::OnSettingsButtonClicked(wxCommandEvent& evt)
 {
-	wxTextEntryDialog handleDialog(m_mainPane, "Please enter handle:");
-	if (handleDialog.ShowModal() == wxID_OK)
+	if (m_cOptions->ShowModal() == wxID_OK)
 	{
-		uintptr_t handle = std::stoul(std::wstring(handleDialog.GetValue()), nullptr, 16);
-
+		options.mmTLS = RCast<cOptions*>(m_cOptions)->m_tlsCallbacksCheckbox->IsChecked();
+		options.mmSEH = RCast<cOptions*>(m_cOptions)->m_sehCheckbox->IsChecked();
+		options.mmFH = RCast<cOptions*>(m_cOptions)->m_fakeHeadersCheckbox->IsChecked();
+		options.mmCH = RCast<cOptions*>(m_cOptions)->m_clearHeadersCheckbox->IsChecked();
+		options.loCT = RCast<cOptions*>(m_cOptions)->m_cloakThreadCheckbox->IsChecked();
 	}
 }
 

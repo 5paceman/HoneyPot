@@ -4,15 +4,32 @@
 #include "cMain.h"
 
 namespace HoneyPot {
-	class cOptions : public wxFrame
+
+	class cOptions : public wxDialog
 	{
 	public:
-		cOptions(cMain* mainFrame);
+		cOptions(wxWindow* parent);
 
-	private:
-		cMain* mainFrame = nullptr;
+	public:
+		wxPanel* m_mainPane = nullptr;
 
-		wxCheckBox* sehCheckbox = nullptr;
-		wxCheckBox
+		wxStaticBox* m_manualMapBox = nullptr;
+
+		wxCheckBox* m_sehCheckbox = nullptr;
+		wxCheckBox* m_clearHeadersCheckbox = nullptr;
+		wxCheckBox* m_fakeHeadersCheckbox = nullptr;
+		wxCheckBox* m_tlsCallbacksCheckbox = nullptr;
+		wxCheckBox* m_cloakThreadCheckbox = nullptr;
+
+	public:
+		void OnSEHCheckboxClick(wxCommandEvent& evt);
+		void OnClearHeadersCheckboxClick(wxCommandEvent& evt);
+		void OnFakeHeadersCheckboxClick(wxCommandEvent& evt);
+		void OnTLSCallbackCheckboxClick(wxCommandEvent& evt);
+		void OnCloakThreadCheckboxClick(wxCommandEvent& evt);
+
+		void OnClose(wxCloseEvent& evt);
+
+		DECLARE_EVENT_TABLE()
 	};
 }

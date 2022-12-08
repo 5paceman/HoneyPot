@@ -7,8 +7,18 @@
 #include "../nightshade/Injection.h"
 #include "wxProcessListCtrl.h"
 #include "resource.h"
+#include "cOptions.h"
+
 
 namespace HoneyPot {
+	struct HP_Options {
+		bool mmSEH = true;
+		bool mmTLS = true;
+		bool mmCH = false;
+		bool mmFH = false;
+		bool loCT = false;
+	};
+
 	class cMain : public wxFrame
 	{
 	public:
@@ -31,8 +41,12 @@ namespace HoneyPot {
 		wxButton* m_refreshButton = nullptr;
 
 		wxStaticText* m_selectedPidText = nullptr;
+
+		wxDialog* m_cOptions = nullptr;
+		HP_Options options = {};
 	private:
 		unsigned long selectedPID = 0L;
+
 	public:
 		void OnLogOutput(const wchar_t* message);
 	public:
