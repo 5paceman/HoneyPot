@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
+
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -51,9 +52,11 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-aaaaaaa               ICON                    "H:\\C++\\HoneyPot\\honeypot2.ico"
+aaaaaaa                 ICON                    "H:\\C++\\HoneyPot\\honeypot2.ico"
 
-frame_icon ICON "H:\\C++\\HoneyPot\\honeypot2.ico"
+FRAME_ICON              ICON                    "H:\\C++\\HoneyPot\\honeypot2.ico"
+
+IDI_DEFPROG             ICON                    "F:\\Default exe.ico"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
